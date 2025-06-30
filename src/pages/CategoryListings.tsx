@@ -54,13 +54,16 @@ export const CategoryListings = () => {
 };
 
 function getSubdomain(): string | null {
-    const host = window.location.hostname;
+  const host = window.location.hostname;
+  const parts = host.split('.');
 
-    const parts = host.split('.');
-    if (host === 'localhost' || parts.length < 3) {
-        console.log("🛠 Running on localhost or no subdomain, using fallback");
-        return 'realestate'; // default fallback for development
-    }
+  if (host === 'localhost' || parts.length < 3) {
+    console.log("🛠 Running on localhost or no subdomain, using fallback");
+    return 'realestate';
+  }
 
-    return parts[0];
+  const fullSubdomain = parts[0]; // e.g., 'realestate-two-mu'
+  const baseSubdomain = fullSubdomain.split('-')[0]; // 'realestate'
+
+  return baseSubdomain; // will now match your category slug
 }
