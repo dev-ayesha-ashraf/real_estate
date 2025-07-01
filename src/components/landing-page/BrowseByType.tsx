@@ -1,87 +1,66 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 
-// Define the type interface
-interface CarType {
-  _id: string;
-  name: string;
-  image: string;
-  totalCars: number;
-  slug: string;
-}
+// Default property types with static images from Unsplash
+const propertyTypes = [
+  {
+    name: "Apartments",
+    slug: "apartments",
+    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2", // Modern apartment
+  },
+  {
+    name: "Villas",
+    slug: "villas",
+    image: "https://images.unsplash.com/photo-1599423300746-b62533397364", // Luxury villa
+  },
+];
 
-const fetchCarTypes = async (): Promise<CarType[]> => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/types/v1/list-types`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  if (!response.ok) throw new Error("Failed to fetch car types");
-  const res = await response.json();
-  return res.data;
-};
-
-export const BrowseByType = () => {
-  const { data: carTypes = [], isLoading } = useQuery({
-    queryKey: ["types"],
-    queryFn: fetchCarTypes,
-  });
-
+const BrowseByPropertyType = () => {
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto">
+    <section className="py-4">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold">Browse Cars by Type</h2>
+          <h2 className="text-3xl font-bold">Browse Property by Type</h2>
           <div className="hidden sm:block">
             <Link to="/listings">
               <Button variant="ghost" className="gap-2">
-                See All Types
+                See All Properties
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            carTypes.map((item) => (
-              <Link 
-                key={item._id} 
-                to={`/types/${item.slug}`}
-                className="group"
-              >
-                <div>
-                  <img
-                    src={`${import.meta.env.VITE_MEDIA_URL}/${item.image}`}
-                    alt={item.name}
-                    className="w-60 h-44 mx-auto object-contain"
-                  />
-                </div>
-                <CardContent className="p-2">
-                  <p className="font-bold text-center mb-1 text-dealership-navy group-hover:text-dealership-primary">
-                    {item.name} ({item.totalCars})
-                  </p>
-                </CardContent>
-              </Link>
-            ))
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {propertyTypes.map((type) => (
+            <Link
+              key={type.slug}
+              to={`/types/${type.slug}`}
+              className="relative h-56 group rounded-xl overflow-hidden"
+            >
+              <img
+                src={type.image}
+                alt={type.name}
+                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute bottom-4 left-4 text-white">
+                <h3 className="text-2xl font-semibold group-hover:underline">
+                  {type.name}
+                </h3>
+              </div>
+            </Link>
+          ))}
         </div>
-        <div className="flex justify-center mt-8 lg:hidden">
+
+        <div className="flex justify-center mt-10 lg:hidden">
           <Link to="/listings">
             <Button
               variant="default"
-              className="gap-2 bg-gradient-to-r from-dealership-primary/80 to-dealership-primary/100"
+              className="gap-2 bg-gradient-to-r from-dealership-primary/80 to-dealership-primary"
             >
-              See All Types
+              See All Properties
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
@@ -90,3 +69,5 @@ export const BrowseByType = () => {
     </section>
   );
 };
+
+export default BrowseByPropertyType;
