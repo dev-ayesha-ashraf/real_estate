@@ -27,43 +27,29 @@ const LoginDialog = ({ showLoginDialog, setShowLoginDialog }) => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!email || !password) {
-      setErrorMessage("Please enter both email and password");
-      return;
-    }
-    
-    if (!isValidEmail(email)) {
-      setErrorMessage("Please enter a valid email address");
-      return;
-    }
-    
-    if (password.length < 6) {
-      setErrorMessage("Password must be at least 6 characters long");
-      return;
-    }
-    
-    // Clear previous errors
-    setErrorMessage("");
-    setIsLoading(true);
-    
-    try {
-      await login(email, password);
-      // Reset form on successful login
-      setEmail("");
-      setPassword("");
-      setShowLoginDialog(false);
-    } catch (error) {
-      setErrorMessage(
-        error?.message || "Login failed. Please check your credentials."
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!email || !password) {
+    setErrorMessage("Please enter both email and password");
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    setErrorMessage("Please enter a valid email address");
+    return;
+  }
+
+  if (password.length < 6) {
+    setErrorMessage("Password must be at least 6 characters long");
+    return;
+  }
+
+  // Use env variable
+  window.location.href = import.meta.env.VITE_IMAGE_API;
+};
+
+
 
   // Handle dialog close
   const handleDialogChange = (open) => {
